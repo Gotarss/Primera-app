@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0e27">
+  <title>⛩️ Kaizen Evolution - Personal Growth RPG</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Courier+Prime:wght@400;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --dark-bg: #0a0e27;
+      --dark-card: #1a1f3a;
+      --accent-cyan: #00d4ff;
+      --accent-purple: #9d4edd;
+      --accent-gold: #ffd60a;
+      --success: #06d6a0;
+      --danger: #ef476f;
+      --warning: #ffd60a;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: 'Courier Prime', monospace;
+      background: linear-gradient(135deg, var(--dark-bg) 0%, #0f1438 50%, var(--dark-bg) 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    body {
+      background-attachment: fixed;
+    }
+
+    #app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ======== HEADER ======== */
+    header {
+      background: rgba(10, 14, 39, 0.95);
+      border-bottom: 2px solid var(--accent-cyan);
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 2px;
+    }
+
+    .logo-subtitle {
+      font-size: 10px;
+      color: var(--accent-cyan);
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .stat-badge {
+      text-align: center;
+      border: 1px solid var(--accent-cyan);
+      padding: 8px 16px;
+      border-radius: 4px;
+      background: rgba(0, 212, 255, 0.05);
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      color: var(--accent-cyan);
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
+    /* ======== MAIN CONTENT ======== */
+    main {
+      flex: 1;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ======== HUB MENU ======== */
+    .hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .hub-card {
+      background: linear-gradient(135deg, var(--dark-card), rgba(157, 78, 221, 0.1));
+      border: 2px solid var(--accent-purple);
+      padding: 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(157, 78, 221, 0.2);
+    }
+
+    .hub-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+    }
+
+    .hub-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .hub-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .hub-description {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ======== MISSIONS VIEW ======== */
+    .missions-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .mission-card {
+      background: var(--dark-card);
+      border-left: 4px solid var(--accent-cyan);
+      padding: 20px;
+      border-radius: 4px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .mission-card:hover {
+      box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2);
+    }
+
+    .mission-card.completed {
+      border-left-color: var(--success);
+      background: rgba(6, 214, 160, 0.1);
+    }
+
+    .mission-card.failed {
+      border-left-color: var(--danger);
+      background: rgba(239, 71, 111, 0.1);
+    }
+
+    .mission-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .mission-title {
+      font-size: 16px;
+      font-weight: bold;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .mission-difficulty {
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+
+    .mission-difficulty.easy {
+      background: rgba(6, 214, 160, 0.3);
+      color: var(--success);
+    }
+
+    .mission-difficulty.medium {
+      background: rgba(255, 214, 10, 0.3);
+      color: var(--warning);
+    }
+
+    .mission-difficulty.hard {
+      background: rgba(239, 71, 111, 0.3);
+      color: var(--danger);
+    }
+
+    .mission-exp {
+      font-size: 12px;
+      color: var(--accent-gold);
+      margin-top: 10px;
+    }
+
+    .mission-checkbox {
+      width: 20px;
+      height: 20px;
+      margin-top: 10px;
+      cursor: pointer;
+      accent-color: var(--accent-cyan);
+    }
+
+    /* ======== DASHBOARD ======== */
+    .dashboard-header {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .dashboard-stat {
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(157, 78, 221, 0.1));
+      border: 1px solid var(--accent-cyan);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .dashboard-stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .dashboard-stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--accent-cyan);
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    /* ======== HABITS TRACKER ======== */
+    .habits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .habit-card {
+      background: var(--dark-card);
+      border: 2px solid var(--accent-purple);
+      padding: 20px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .habit-card.completed {
+      border-color: var(--success);
+      background: rgba(6, 214, 160, 0.1);
+    }
+
+    .habit-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(157, 78, 221, 0.2);
+    }
+
+    .habit-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .habit-name {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .habit-input {
+      width: 100%;
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid var(--accent-cyan);
+      color: var(--text-primary);
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .habit-input:focus {
+      outline: none;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    }
+
+    .habit-button {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      border: none;
+      color: var(--dark-bg);
+      padding: 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s;
+    }
+
+    .habit-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+    }
+
+    /* ======== EMOTIONS TRACKER ======== */
+    .emotions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .emotion-card {
+      background: var(--dark-card);
+      border: 2px solid var(--accent-purple);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .emotion-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .emotion-slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(0, 212, 255, 0.2);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      margin: 15px 0;
+    }
+
+    .emotion-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+    }
+
+    .emotion-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+    }
+
+    .emotion-value {
+      font-size: 24px;
+      color: var(--accent-cyan);
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    /* ======== TIMELINE ======== */
+    .timeline-container {
+      position: relative;
+      padding: 40px 20px;
+      margin-top: 30px;
+    }
+
+    .timeline-line {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple));
+      top: 0;
+    }
+
+    .timeline-items {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-item {
+      position: relative;
+      width: 90%;
+      margin: 0 auto;
+      padding: 20px;
+      background: var(--dark-card);
+      border: 2px solid var(--accent-cyan);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 20px;
+      background: var(--dark-bg);
+      border: 3px solid var(--accent-cyan);
+      border-radius: 50%;
+      top: -40px;
+      z-index: 2;
+    }
+
+    .timeline-day {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .timeline-milestone {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--accent-gold);
+    }
+
+    /* ======== CORRELATIONS ======== */
+    .correlation-matrix {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    .correlation-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .correlation-table th,
+    .correlation-table td {
+      border: 1px solid var(--accent-purple);
+      padding: 10px;
+      text-align: center;
+      background: var(--dark-card);
+    }
+
+    .correlation-table th {
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--accent-cyan);
+      font-weight: bold;
+    }
+
+    .correlation-positive {
+      background: rgba(6, 214, 160, 0.2) !important;
+      color: var(--success);
+      font-weight: bold;
+    }
+
+    .correlation-negative {
+      background: rgba(239, 71, 111, 0.2) !important;
+      color: var(--danger);
+      font-weight: bold;
+    }
+
+    .correlation-neutral {
+      color: var(--text-secondary);
+    }
+
+    /* ======== REWARDS ======== */
+    .rewards-section {
+      margin-top: 30px;
+    }
+
+    .reward-card {
+      background: linear-gradient(135deg, rgba(255, 214, 10, 0.1), rgba(157, 78, 221, 0.1));
+      border: 2px solid var(--accent-gold);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .reward-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+    }
+
+    .reward-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ======== BUTTONS ======== */
+    button {
+      font-family: 'Courier Prime', monospace;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: bold;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      color: var(--dark-bg);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      transform: scale(1.05);
+    }
+
+    .btn-secondary {
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--accent-cyan);
+      border: 1px solid var(--accent-cyan);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0, 212, 255, 0.2);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: var(--dark-bg);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    /* ======== MODAL ======== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--dark-card);
+      border: 2px solid var(--accent-cyan);
+      padding: 30px;
+      border-radius: 8px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--accent-purple);
+      padding-bottom: 15px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: bold;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--accent-cyan);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    /* ======== FOOTER ======== */
+    footer {
+      background: rgba(10, 14, 39, 0.95);
+      border-top: 2px solid var(--accent-purple);
+      padding: 20px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 12px;
+      margin-top: 40px;
+    }
+
+    /* ======== RESPONSIVE ======== */
+    @media (max-width: 768px) {
+      .header-stats {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .timeline-line {
+        left: 20px;
+      }
+
+      .timeline-item {
+        width: 85%;
+        margin-left: 30px;
+      }
+
+      .timeline-dot {
+        left: 20px;
+      }
+
+      main {
+        padding: 20px 15px;
+      }
+
+      .hub-grid,
+      .missions-container,
+      .habits-grid,
+      .emotions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <div class="header-content">
+        <div>
+          <div class="logo">⛩️ KAIZEN EVOLUTION</div>
+          <div class="logo-subtitle">Personal Growth RPG • 1% Better Daily</div>
+        </div>
+        <div class="header-stats">
+          <div class="stat-badge">
+            <div class="stat-label">Total EXP</div>
+            <div class="stat-value" id="totalExp">0</div>
+          </div>
+          <div class="stat-badge">
+            <div class="stat-label">Daily Streak</div>
+            <div class="stat-value" id="streakCount">0</div>
+          </div>
+          <div class="stat-badge">
+            <div class="stat-label">Level</div>
+            <div class="stat-value" id="levelValue">1</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- HUB VIEW -->
+      <div id="hubView" class="view active">
+        <h1 style="font-family: 'Orbitron'; font-size: 28px; margin-bottom: 20px;">[ MAIN HUB ]</h1>
+        <div class="hub-grid">
+          <div class="hub-card" onclick="app.switchView('missionsView')">
+            <div class="hub-icon">🎯</div>
+            <div class="hub-title">DAILY MISSIONS</div>
+            <div class="hub-description">Track your daily quests and earn EXP</div>
+          </div>
+          <div class="hub-card" onclick="app.switchView('habitsView')">
+            <div class="hub-icon">📊</div>
+            <div class="hub-title">HABIT TRACKING</div>
+            <div class="hub-description">Monitor your 9 personal growth habits</div>
+          </div>
+          <div class="hub-card" onclick="app.switchView('emotionsView')">
+            <div class="hub-icon">💭</div>
+            <div class="hub-title">EMOTION TRACKING</div>
+            <div class="hub-description">Log your emotional state daily</div>
+          </div>
+          <div class="hub-card" onclick="app.switchView('dashboardView')">
+            <div class="hub-icon">📈</div>
+            <div class="hub-title">ANALYTICS</div>
+            <div class="hub-description">View Kaizen data & correlations</div>
+          </div>
+          <div class="hub-card" onclick="app.switchView('journeyView')">
+            <div class="hub-icon">🗺️</div>
+            <div class="hub-title">90-DAY JOURNEY</div>
+            <div class="hub-description">Timeline of your evolution</div>
+          </div>
+          <div class="hub-card" onclick="app.switchView('libraryView')">
+            <div class="hub-icon">📚</div>
+            <div class="hub-title">LIBRARY & CONTENT</div>
+            <div class="hub-description">Recommended books, podcasts & videos</div>
+          </div>
+          <div class="hub-card" onclick="app.switchView('rewardsView')">
+            <div class="hub-icon">🏆</div>
+            <div class="hub-title">REWARDS</div>
+            <div class="hub-description">Weekly, monthly & milestone rewards</div>
+          </div>
+          <div class="hub-card" onclick="app.exportData()">
+            <div class="hub-icon">💾</div>
+            <div class="hub-title">EXPORT DATA</div>
+            <div class="hub-description">Download your data as JSON</div>
+          </div>
+          <div class="hub-card" onclick="app.switchView('settingsView')">
+            <div class="hub-icon">⚙️</div>
+            <div class="hub-title">SETTINGS</div>
+            <div class="hub-description">Customize your experience</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MISSIONS VIEW -->
+      <div id="missionsView" class="view">
+        <h1 style="font-family: 'Orbitron'; font-size: 28px; margin-bottom: 20px;">[ DAILY MISSIONS ]</h1>
+        <button class="btn-secondary" onclick="app.switchView('hubView')" style="margin-bottom: 20px;">← Back to Hub</button>
+        <div class="missions-container" id="missionsContainer"></div>
+      </div>
+
+      <!-- HABITS VIEW -->
+      <div id="habitsView" class="view">
+        <h1 style="font-family: 'Orbitron'; font-size: 28px; margin-bottom: 20px;">[ HABIT TRACKER ]</h1>
+        <button class="btn-secondary" onclick="app.switchView('hubView')" style="margin-bottom: 20px;">← Back to Hub</button>
+        <div class="habits-grid" id="habitsContainer"></div>
+      </div>
+
+      <!-- EMOTIONS VIEW -->
+      <div id="emotionsView" class="view">
+        <h1 style="font-family: 'Orbitron'; font-size: 28px; margin-bottom: 20px;">[ EMOTIONAL STATE ]</h1>
+        <button class="btn-secondary" onclick="app.switchView('hubView')" style="margin-bottom: 20px;">← Back to Hub</button>
+        <div class="emotions-grid" id="emotionsContainer"></div>
+        <button class="btn-primary" onclick="app.saveEmotions()" style="margin-top: 20px; width: 100%;">Save Emotional State</button>
+      </div>
+
+      <!-- DASHBOARD VIEW -->
+      <div id="dashboardView" class="view">
+        <h1 style="font-family: 'Orbitron'; font-size: 28px; margin-bottom: 20px;">[ KAIZEN ANALYTICS ]</h1>
+        <button class="btn-secondary" onclick="app.switchView('hubView')" style="margin-bottom: 20px;">← Back to Hub</button>
+        <div id="dashboardContent"></div>
+      </div>
+
+      <!-- JOURNEY VIEW -->
+      <div id="journeyView" class="view">
+        <h1 style="font-family: 'Orbitron'; font-size: 28px; margin-bottom: 20px;">[ YOUR 90-DAY JOURNEY ]</h1>
+        <button class="btn-secondary" onclick="app.switchView('hubView')" style="margin-bottom: 20px;">← Back to Hub</button>
+        <div id="journeyContent"></div>
+      </div>
+
+      <!-- LIBRARY VIEW -->
+      <div id="libraryView" class="view">
+        <h1 style="font-family: 'Orbitron'; font-size: 28px; margin-bottom: 20px;">[ LIBRARY & CONTENT ]</h1>
+        <button class="btn-secondary" onclick="app.switchView('hubView')" style="margin-bottom: 20px;">← Back to Hub</button>
+        <div id="libraryContent"></div>
+      </div>
+
+      <!-- REWARDS VIEW -->
+      <div id="rewardsView" class="view">
+        <h1 style="font-family: 'Orbitron'; font-size: 28px; margin-bottom: 20px;">[ REWARDS SYSTEM ]</h1>
+        <button class="btn-secondary" onclick="app.switchView('hubView')" style="margin-bottom: 20px;">← Back to Hub</button>
+        <div id="rewardsContent"></div>
+      </div>
+
+      <!-- SETTINGS VIEW -->
+      <div id="settingsView" class="view">
+        <h1 style="font-family: 'Orbitron'; font-size: 28px; margin-bottom: 20px;">[ SETTINGS ]</h1>
+        <button class="btn-secondary" onclick="app.switchView('hubView')" style="margin-bottom: 20px;">← Back to Hub</button>
+        <div id="settingsContent"></div>
+      </div>
+    </main>
+
+    <footer>
+      © 2024 Kaizen Evolution | Your Personal Growth Companion | Develop at 1% daily
+    </footer>
+  </div>
+
+  <script>
+    // ============ APP STATE ============
+    const app = {
+      data: {
+        totalExp: 0,
+        streak: 0,
+        level: 1,
+        lastActiveDate: new Date().toISOString().split('T')[0],
+        missions: [],
+        habits: {},
+        emotions: {},
+        entries: [],
+        library: { currentlyReading: null, completed: [], bookmarks: [] },
+        rewards: { unlocked: [], weekly: [], monthly: [] },
+        settings: { enableNotifications: true }
+      },
+
+      // Habit definitions
+      habitDefinitions: [
+        { id: 'exercise', name: 'Ejercicio', icon: '💪', type: 'boolean', target: 'Daily', description: 'Sí/No' },
+        { id: 'reading', name: 'Lectura', icon: '📚', type: 'number', target: '15 págs/día', description: 'Páginas + Comprensión' },
+        { id: 'sleep', name: 'Sueño', icon: '😴', type: 'number', target: '8h', description: 'Horas + Interrupciones' },
+        { id: 'hygiene', name: 'Higiene', icon: '🚿', type: 'boolean', target: 'Daily', description: 'Ducha + Dientes + Aseo' },
+        { id: 'meditation', name: 'Meditación', icon: '🧘', type: 'number', target: '10 min', description: 'Minutos' },
+        { id: 'study', name: 'CAPM/Inglés', icon: '💼', type: 'number', target: '45 min', description: 'Minutos' },
+        { id: 'nutrition', name: 'Nutrición', icon: '🥗', type: 'boolean', target: 'Sin chatarra', description: 'Sí/No' },
+        { id: 'gratitude', name: 'Gratitud', icon: '📝', type: 'boolean', target: 'Daily', description: 'Reflexión 5 min' },
+        { id: 'hydration', name: 'Hidratación', icon: '💧', type: 'number', target: '2.8 L', description: 'Litros' }
+      ],
+
+      emotionDefinitions: [
+        { id: 'anxiety', name: 'Ansiedad', icon: '😰' },
+        { id: 'confidence', name: 'Confianza', icon: '💪' },
+        { id: 'energy', name: 'Energía', icon: '⚡' },
+        { id: 'motivation', name: 'Motivación', icon: '🔥' }
+      ],
+
+      bookLibrary: [
+        {
+          id: 1,
+          title: 'Emotional Intelligence 2.0',
+          author: 'Daniel Goleman & Richard E. Boyatzis',
+          category: 'Inteligencia Emocional',
+          relevance: 'HIGH',
+          description: 'Mejora tu conciencia y gestión emocional'
+        },
+        {
+          id: 2,
+          title: 'Atomic Habits',
+          author: 'James Clear',
+          category: 'Hábitos',
+          relevance: 'HIGH',
+          description: 'El poder del 1% de mejora diaria (KAIZEN)'
+        },
+        {
+          id: 3,
+          title: 'Models',
+          author: 'Mark Manson',
+          category: 'Seguridad Personal',
+          relevance: 'HIGH',
+          description: 'Confianza, inseguridades y autopercepción'
+        },
+        {
+          id: 4,
+          title: 'A Guide to the Project Management Body of Knowledge (PMBOK)',
+          author: 'PMI',
+          category: 'Project Management',
+          relevance: 'MEDIUM',
+          description: 'Tu transición hacia PM y CAPM'
+        },
+        {
+          id: 5,
+          title: 'The Phoenix Project',
+          author: 'Gene Kim',
+          category: 'Project Management',
+          relevance: 'MEDIUM',
+          description: 'Novela sobre cultura DevOps y PM estratégico'
+        },
+        {
+          id: 6,
+          title: 'Man\'s Search for Meaning',
+          author: 'Viktor Frankl',
+          category: 'Filosofía',
+          relevance: 'HIGH',
+          description: 'Psicología + filosofía sobre el sentido de vida'
+        },
+        {
+          id: 7,
+          title: 'The Courage to Be Disliked',
+          author: 'Ichiro Kishimi',
+          category: 'Psicología',
+          relevance: 'MEDIUM',
+          description: 'Filosofía de Adler en diálogos'
+        },
+        {
+          id: 8,
+          title: '10% Happier',
+          author: 'Dan Harris',
+          category: 'Meditación',
+          relevance: 'HIGH',
+          description: 'Meditación y neurociencia aplicada'
+        }
+      ],
+
+      contentRecommendations: {
+        podcast: [
+          { title: 'The Tim Ferriss Show', topic: 'Autosuperación', emotion: 'motivation' },
+          { title: 'The School of Greatness', topic: 'Crecimiento Personal', emotion: 'confidence' },
+          { title: 'Mind FM', topic: 'Salud Mental', emotion: 'anxiety' },
+          { title: 'Mindful Podcast', topic: 'Meditación', emotion: 'energy' }
+        ],
+        youtube: [
+          { title: 'Psicología en Español', topic: 'Inteligencia Emocional', emotion: 'confidence' },
+          { title: 'Coachmiller', topic: 'Productividad', emotion: 'motivation' },
+          { title: 'Luca Montersino', topic: 'Hábitos', emotion: 'energy' },
+          { title: 'Andrew Huberman', topic: 'Ciencia de la mente', emotion: 'anxiety' }
+        ]
+      },
+
+      // Initialize app
+      init() {
+        this.loadData();
+        this.generateDailyMissions();
+        this.renderHub();
+        this.updateHeader();
+        console.log('✅ Kaizen Evolution App Initialized');
+      },
+
+      // Load data from localStorage
+      loadData() {
+        const saved = localStorage.getItem('kaizenData');
+        if (saved) {
+          this.data = JSON.parse(saved);
+        }
+        this.initializeHabits();
+        this.checkDaily();
+      },
+
+      // Save data
+      saveData() {
+        localStorage.setItem('kaizenData', JSON.stringify(this.data));
+      },
+
+      // Initialize habits if first time
+      initializeHabits() {
+        this.habitDefinitions.forEach(habit => {
+          if (!this.data.habits[habit.id]) {
+            this.data.habits[habit.id] = { completed: false, value: 0, daily: [] };
+          }
+        });
+        this.emotionDefinitions.forEach(emotion => {
+          if (!this.data.emotions[emotion.id]) {
+            this.data.emotions[emotion.id] = [];
+          }
+        });
+      },
+
+      // Check if day changed
+      checkDaily() {
+        const today = new Date().toISOString().split('T')[0];
+        if (this.data.lastActiveDate !== today) {
+          this.data.lastActiveDate = today;
+          this.checkStreak();
+        }
+      },
+
+      // Check streak logic
+      checkStreak() {
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        
+        // If completed missions yesterday, maintain streak; otherwise reset
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        const yesterdayCompleted = this.data.missions.filter(m => m.date === yesterdayStr && m.completed).length;
+        
+        if (yesterdayCompleted === 0) {
+          this.data.streak = 0;
+        }
+      },
+
+      // Generate daily missions
+      generateDailyMissions() {
+        const today = new Date().toISOString().split('T')[0];
+        const todayMissions = this.data.missions.filter(m => m.date === today);
+        
+        if (todayMissions.length === 0) {
+          // Fixed missions
+          const fixedMissions = [
+            { id: 'ex1', title: 'Ejercita', difficulty: 'medium', exp: 150, habit: 'exercise', date: today, completed: false },
+            { id: 'read1', title: 'Lee 15 páginas', difficulty: 'easy', exp: 50, habit: 'reading', date: today, completed: false },
+            { id: 'sleep1', title: 'Duerme bien (8h)', difficulty: 'medium', exp: 150, habit: 'sleep', date: today, completed: false },
+            { id: 'hyg1', title: 'Higiene completa', difficulty: 'easy', exp: 50, habit: 'hygiene', date: today, completed: false },
+            { id: 'med1', title: 'Medita 10 min', difficulty: 'easy', exp: 50, habit: 'meditation', date: today, completed: false },
+            { id: 'study1', title: 'Estudia 45 min', difficulty: 'medium', exp: 150, habit: 'study', date: today, completed: false },
+            { id: 'nut1', title: 'Sin comida chatarra', difficulty: 'easy', exp: 50, habit: 'nutrition', date: today, completed: false },
+            { id: 'grat1', title: 'Gratitud & Journaling', difficulty: 'easy', exp: 50, habit: 'gratitude', date: today, completed: false },
+            { id: 'hydra1', title: 'Bebe 2.8L de agua', difficulty: 'medium', exp: 150, habit: 'hydration', date: today, completed: false }
+          ];
+          
+          this.data.missions.push(...fixedMissions);
+          this.saveData();
+        }
+      },
+
+      // Switch views
+      switchView(viewName) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(viewName).classList.add('active');
+        
+        if (viewName === 'missionsView') this.renderMissions();
+        if (viewName === 'habitsView') this.renderHabits();
+        if (viewName === 'emotionsView') this.renderEmotions();
+        if (viewName === 'dashboardView') this.renderDashboard();
+        if (viewName === 'journeyView') this.renderJourney();
+        if (viewName === 'libraryView') this.renderLibrary();
+        if (viewName === 'rewardsView') this.renderRewards();
+        if (viewName === 'settingsView') this.renderSettings();
+        
+        window.scrollTo(0, 0);
+      },
+
+      // Render Hub
+      renderHub() {
+        this.switchView('hubView');
+      },
+
+      // Render Missions
+      renderMissions() {
+        const today = new Date().toISOString().split('T')[0];
+        const todayMissions = this.data.missions.filter(m => m.date === today);
+        
+        let html = '';
+        todayMissions.forEach(mission => {
+          html += `
+            <div class="mission-card ${mission.completed ? 'completed' : ''}">
+              <div class="mission-header">
+                <div class="mission-title">${mission.title}</div>
+                <span class="mission-difficulty ${mission.difficulty}">${mission.difficulty.toUpperCase()}</span>
+              </div>
+              <div class="mission-exp">+${mission.exp} EXP</div>
+              <input type="checkbox" class="mission-checkbox" ${mission.completed ? 'checked' : ''} 
+                     onchange="app.toggleMission('${mission.id}')">
+            </div>
+          `;
+        });
+        
+        document.getElementById('missionsContainer').innerHTML = html;
+      },
+
+      // Toggle mission
+      toggleMission(missionId) {
+        const mission = this.data.missions.find(m => m.id === missionId);
+        if (mission) {
+          mission.completed = !mission.completed;
+          if (mission.completed) {
+            this.data.totalExp += mission.exp;
+            this.data.streak++;
+            this.updateLevel();
+            this.checkRewards();
+          } else {
+            this.data.totalExp -= mission.exp;
+            this.data.streak--;
+          }
+          this.saveData();
+          this.updateHeader();
+          this.renderMissions();
+        }
+      },
+
+      // Update level based on EXP
+      updateLevel() {
+        this.data.level = Math.floor(this.data.totalExp / 1000) + 1;
+      },
+
+      // Check for rewards
+      checkRewards() {
+        const today = new Date().toISOString().split('T')[0];
+        const dayOfWeek = new Date().getDay();
+        
+        // Weekly reward (Sunday)
+        if (dayOfWeek === 0 && this.data.totalExp % 500 === 0) {
+          this.data.rewards.weekly.push({
+            date: today,
+            title: 'Weekly Reward Unlocked!',
+            description: 'You\'ve earned a week of consistency'
+          });
+        }
+        
+        // Monthly reward
+        if (new Date().getDate() === 1 && this.data.totalExp % 3000 === 0) {
+          this.data.rewards.monthly.push({
+            date: today,
+            title: 'Monthly Achievement!',
+            description: 'A month of dedication and growth'
+          });
+        }
+      },
+
+      // Render Habits
+      renderHabits() {
+        let html = '';
+        this.habitDefinitions.forEach(habit => {
+          const habitData = this.data.habits[habit.id] || { completed: false, value: 0 };
+          html += `
+            <div class="habit-card ${habitData.completed ? 'completed' : ''}">
+              <div class="habit-icon">${habit.icon}</div>
+              <div class="habit-name">${habit.name}</div>
+              <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 10px;">${habit.target}</div>
+              ${habit.type === 'boolean' ? `
+                <button class="habit-button" onclick="app.toggleHabit('${habit.id}')">
+                  ${habitData.completed ? '✓ Completed' : 'Complete'}
+                </button>
+              ` : `
+                <input type="number" class="habit-input" placeholder="Value" value="${habitData.value || ''}" 
+                       onchange="app.setHabitValue('${habit.id}', this.value)">
+                <button class="habit-button" onclick="app.saveHabit('${habit.id}')">Save</button>
+              `}
+            </div>
+          `;
+        });
+        
+        document.getElementById('habitsContainer').innerHTML = html;
+      },
+
+      // Toggle habit
+      toggleHabit(habitId) {
+        this.data.habits[habitId].completed = !this.data.habits[habitId].completed;
+        this.saveData();
+        this.renderHabits();
+      },
+
+      // Set habit value
+      setHabitValue(habitId, value) {
+        this.data.habits[habitId].value = parseFloat(value) || 0;
+      },
+
+      // Save habit
+      saveHabit(habitId) {
+        const today = new Date().toISOString().split('T')[0];
+        if (!this.data.habits[habitId].daily) {
+          this.data.habits[habitId].daily = [];
+        }
+        this.data.habits[habitId].daily.push({
+          date: today,
+          value: this.data.habits[habitId].value
+        });
+        this.saveData();
+        this.renderHabits();
+      },
+
+      // Render Emotions
+      renderEmotions() {
+        let html = '';
+        this.emotionDefinitions.forEach(emotion => {
+          const value = this.data.emotions[emotion.id] ? this.data.emotions[emotion.id][this.data.emotions[emotion.id].length - 1]?.value || 5 : 5;
+          html += `
+            <div class="emotion-card">
+              <div style="font-size: 32px; margin-bottom: 10px;">${emotion.icon}</div>
+              <div class="emotion-label">${emotion.name}</div>
+              <input type="range" class="emotion-slider" min="1" max="10" value="${value}" 
+                     oninput="document.getElementById('${emotion.id}Value').textContent = this.value; app.currentEmotions = app.currentEmotions || {}; app.currentEmotions['${emotion.id}'] = this.value;">
+              <div class="emotion-value" id="${emotion.id}Value">${value}</div>
+            </div>
+          `;
+        });
+        
+        document.getElementById('emotionsContainer').innerHTML = html;
+      },
+
+      // Save emotions
+      saveEmotions() {
+        const today = new Date().toISOString().split('T')[0];
+        const emotions = this.currentEmotions || {};
+        
+        this.emotionDefinitions.forEach(emotion => {
+          const value = emotions[emotion.id] || 5;
+          this.data.emotions[emotion.id].push({
+            date: today,
+            value: parseInt(value)
+          });
+        });
+        
+        this.saveData();
+        alert('✓ Emotional state saved!');
+      },
+
+      // Render Dashboard
+      renderDashboard() {
+        let html = `
+          <div class="dashboard-header">
+            <div class="dashboard-stat">
+              <div class="dashboard-stat-label">Total Days Tracked</div>
+              <div class="dashboard-stat-value">${this.data.entries.length || 0}</div>
+            </div>
+            <div class="dashboard-stat">
+              <div class="dashboard-stat-label">Avg. Daily Emotions</div>
+              <div class="dashboard-stat-value">${Math.round((this.data.emotions.energy?.[this.data.emotions.energy.length - 1]?.value || 5) + (this.data.emotions.confidence?.[this.data.emotions.confidence.length - 1]?.value || 5) + (this.data.emotions.motivation?.[this.data.emotions.motivation.length - 1]?.value || 5)) / 3}</div>
+            </div>
+            <div class="dashboard-stat">
+              <div class="dashboard-stat-label">Habits Tracked</div>
+              <div class="dashboard-stat-value">${this.habitDefinitions.length}</div>
+            </div>
+            <div class="dashboard-stat">
+              <div class="dashboard-stat-label">Current Level</div>
+              <div class="dashboard-stat-value">${this.data.level}</div>
+            </div>
+          </div>
+          
+          <h2 style="font-family: 'Orbitron'; margin-top: 30px; margin-bottom: 15px;">Habit Performance</h2>
+          <div style="background: var(--dark-card); padding: 20px; border-radius: 8px; border: 1px solid var(--accent-purple);">
+            ${this.habitDefinitions.map(h => `
+              <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--accent-purple);">
+                <span>${h.icon} ${h.name}</span>
+                <span style="color: var(--accent-cyan);">${this.data.habits[h.id]?.daily?.length || 0} logs</span>
+              </div>
+            `).join('')}
+          </div>
+          
+          <h2 style="font-family: 'Orbitron'; margin-top: 30px; margin-bottom: 15px;">Emotion Correlations</h2>
+          <div class="correlation-matrix">
+            <table class="correlation-table">
+              <thead>
+                <tr>
+                  <th>Emotion</th>
+                  <th>Latest Value</th>
+                  <th>Trend</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${this.emotionDefinitions.map(e => {
+                  const latest = this.data.emotions[e.id]?.[this.data.emotions[e.id].length - 1]?.value || 5;
+                  const prev = this.data.emotions[e.id]?.[Math.max(0, this.data.emotions[e.id].length - 2)]?.value || 5;
+                  const trend = latest > prev ? '↑' : latest < prev ? '↓' : '→';
+                  return `
+                    <tr>
+                      <td>${e.icon} ${e.name}</td>
+                      <td>${latest}/10</td>
+                      <td>${trend}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        
+        document.getElementById('dashboardContent').innerHTML = html;
+      },
+
+      // Render Journey
+      renderJourney() {
+        const milestones = [
+          { day: 1, title: 'New Beginning', desc: 'You started your evolution' },
+          { day: 7, title: 'Week 1 Warrior', desc: 'One week of consistency' },
+          { day: 30, title: 'Month Master', desc: 'A full month of dedication' },
+          { day: 60, title: 'Legend Status', desc: 'Two months of excellence' },
+          { day: 90, title: 'Evolution Complete', desc: 'Your 90-day transformation' }
+        ];
+        
+        let html = '<div class="timeline-container">';
+        html += '<div class="timeline-line"></div>';
+        html += '<div class="timeline-items">';
+        
+        milestones.forEach((milestone, idx) => {
+          const achieved = this.data.entries.length >= milestone.day;
+          html += `
+            <div class="timeline-item" style="border-color: ${achieved ? 'var(--success)' : 'var(--accent-cyan)'};">
+              <div class="timeline-dot"></div>
+              <div class="timeline-day">Day ${milestone.day}</div>
+              <div class="timeline-milestone">${achieved ? '✓' : '◯'} ${milestone.title}</div>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">${milestone.desc}</div>
+            </div>
+          `;
+        });
+        
+        html += '</div></div>';
+        document.getElementById('journeyContent').innerHTML = html;
+      },
+
+      // Render Library
+      renderLibrary() {
+        let html = '<h2 style="font-family: \'Orbitron\'; margin-bottom: 20px;">📚 Recommended Books</h2>';
+        html += '<div class="missions-container">';
+        
+        this.bookLibrary.forEach(book => {
+          html += `
+            <div class="mission-card" style="cursor: default;">
+              <div class="mission-header">
+                <div class="mission-title">${book.title}</div>
+                <span class="mission-difficulty ${book.relevance === 'HIGH' ? 'hard' : 'medium'}">${book.relevance}</span>
+              </div>
+              <div style="font-size: 12px; color: var(--text-secondary); margin: 10px 0;">by ${book.author}</div>
+              <div style="font-size: 12px; color: var(--accent-cyan);">📁 ${book.category}</div>
+              <div style="font-size: 12px; margin-top: 10px; line-height: 1.6;">${book.description}</div>
+              <button class="btn-primary" style="width: 100%; margin-top: 10px;" onclick="app.selectBook(${book.id})">Select This Book</button>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+        
+        html += '<h2 style="font-family: \'Orbitron\'; margin-top: 30px; margin-bottom: 20px;">🎧 Podcasts & Videos (Based on Your Emotions)</h2>';
+        html += '<div class="missions-container">';
+        
+        // Suggest based on emotions
+        const currentEmotionState = this.data.emotions.anxiety?.[this.data.emotions.anxiety.length - 1]?.value || 5;
+        const recommendations = currentEmotionState < 4 ? this.contentRecommendations.podcast : this.contentRecommendations.youtube;
+        
+        recommendations.forEach(rec => {
+          html += `
+            <div class="mission-card">
+              <div class="mission-title">${rec.title}</div>
+              <div style="font-size: 12px; color: var(--text-secondary); margin: 10px 0;">Topic: ${rec.topic}</div>
+              <button class="btn-secondary" style="width: 100%;">Learn More</button>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+        document.getElementById('libraryContent').innerHTML = html;
+      },
+
+      selectBook(bookId) {
+        const book = this.bookLibrary.find(b => b.id === bookId);
+        this.data.library.currentlyReading = book;
+        this.saveData();
+        alert(`📚 Now reading: "${book.title}"\n\nCheck podcast/video recommendations below!`);
+      },
+
+      // Render Rewards
+      renderRewards() {
+        let html = '<div class="rewards-section">';
+        
+        html += '<h2 style="font-family: \'Orbitron\'; margin-bottom: 20px;">Weekly Rewards</h2>';
+        html += '<div class="reward-card">';
+        html += '<div class="reward-title">🎯 Weekly Challenge Bonus</div>';
+        html += '<div class="reward-desc">Complete 7+ missions per week to unlock +500 bonus EXP</div>';
+        html += '</div>';
+        
+        html += '<h2 style="font-family: \'Orbitron\'; margin-top: 30px; margin-bottom: 20px;">Monthly Milestones</h2>';
+        html += '<div class="reward-card">';
+        html += '<div class="reward-title">🏆 Month Mastery</div>';
+        html += '<div class="reward-desc">Maintain 20+ day streak: "You\'ve earned a new pair of headphones" or "You\'ve earned a night out with friends"</div>';
+        html += '</div>';
+        
+        html += '<h2 style="font-family: \'Orbitron\'; margin-top: 30px; margin-bottom: 20px;">Milestone Unlocks</h2>';
+        html += '<div class="reward-card">';
+        html += '<div class="reward-title">⭐ Level 5 Reached</div>';
+        html += '<div class="reward-desc">5000 EXP milestone: "You\'ve earned that Master\'s degree mindset"</div>';
+        html += '</div>';
+        
+        html += '<div class="reward-card" style="border-color: var(--danger);">';
+        html += '<div class="reward-title" style="color: var(--danger);">⚠️ Streak Lost</div>';
+        html += '<div class="reward-desc">Failed mission = -EXP + Streak reset. Visual indicator on profile degrades.</div>';
+        html += '</div>';
+        
+        html += '</div>';
+        document.getElementById('rewardsContent').innerHTML = html;
+      },
+
+      // Render Settings
+      renderSettings() {
+        let html = `
+          <div style="background: var(--dark-card); padding: 20px; border-radius: 8px; border: 1px solid var(--accent-purple);">
+            <h2 style="font-family: 'Orbitron'; margin-bottom: 20px;">⚙️ Preferences</h2>
+            
+            <div style="margin-bottom: 20px;">
+              <label style="font-size: 14px; margin-bottom: 10px; display: block;">Enable Notifications</label>
+              <input type="checkbox" ${this.data.settings.enableNotifications ? 'checked' : ''} 
+                     onchange="app.data.settings.enableNotifications = this.checked; app.saveData();">
+            </div>
+            
+            <div style="margin-top: 30px;">
+              <button class="btn-danger" onclick="app.resetData()" style="width: 100%;">RESET ALL DATA</button>
+              <div style="font-size: 11px; color: var(--danger); margin-top: 10px;">⚠️ This action cannot be undone</div>
+            </div>
+          </div>
+        `;
+        document.getElementById('settingsContent').innerHTML = html;
+      },
+
+      // Update header stats
+      updateHeader() {
+        document.getElementById('totalExp').textContent = this.data.totalExp;
+        document.getElementById('streakCount').textContent = this.data.streak;
+        document.getElementById('levelValue').textContent = this.data.level;
+      },
+
+      // Export data
+      exportData() {
+        const exportObj = {
+          exportDate: new Date().toISOString(),
+          data: this.data,
+          summary: {
+            totalExp: this.data.totalExp,
+            currentLevel: this.data.level,
+            currentStreak: this.data.streak,
+            totalMissionsCompleted: this.data.missions.filter(m => m.completed).length,
+            totalHabitsLogged: Object.values(this.data.habits).reduce((sum, h) => sum + (h.daily?.length || 0), 0)
+          }
+        };
+        
+        const dataStr = JSON.stringify(exportObj, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `kaizen-evolution-${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+      },
+
+      // Reset data
+      resetData() {
+        if (confirm('⚠️ Are you sure? This will delete ALL your data!')) {
+          localStorage.removeItem('kaizenData');
+          location.reload();
+        }
+      }
+    };
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      app.init();
+    });
+
+    // Register PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('data:application/javascript,' + encodeURIComponent(`
+        self.addEventListener('install', () => self.skipWaiting());
+        self.addEventListener('activate', () => self.clients.claim());
+      `)).catch(() => {});
+    }
+  </script>
+</body>
+</html>
